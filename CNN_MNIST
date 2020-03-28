@@ -36,10 +36,5 @@ net.fit(train_images,train_labels,epochs=10,batch_size=32)
 
 #Evaluation
 loss, acc = net.evaluate(test_images, test_labels)
-epochs = np.array(range(1,11))
-plt.plot(epochs, acc, label = 'Training accuracy')
-plt.plot(epochs, loss, label = 'Training loss')
-plt.legend()
-plt.show()
 
 
