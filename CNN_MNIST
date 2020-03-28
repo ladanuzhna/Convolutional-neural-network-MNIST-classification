@@ -1,0 +1,45 @@
+import numpy as np 
+import pandas as pd 
+from keras import models
+from keras import layers
+from keras.utils import to_categorical
+from keras.datasets import mnist
+import matplotlib.pyplot as plt
+
+#Model definition
+net = models.Sequential()
+net.add(layers.Conv2D(32, input_shape=(28,28,1), kernel_size=(4,4), activation='relu'))
+net.add(layers.MaxPooling2D())
+net.add(layers.Conv2D(64, kernel_size=(4,4), activation='relu'))
+net.add(layers.MaxPooling2D())
+net.add(layers.Flatten())
+net.add(layers.Dense(32, activation='relu'))
+net.add(layers.Dropout(0.4))
+net.add(layers.Dense(10, activation='softmax'))
+
+net.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
+
+#Data normalization
+(train_images,train_labels),(test_images,test_labels) = mnist.load_data()
+
+train_images = train_images.astype('float32')  / 255
+train_images = train_images.reshape(train_images.shape[0], 28, 28, 1)
+train_labels = train_labels.values.astype('int32') 
+train_labels = to_categorical(train_labels)
+
+test_images = test_images.astype('float32') / 255
+test_images = test_images.reshape(test_images.shape[0], 28, 28, 1)
+test_labels = to_categorical(test_labels)
+
+#Model training
+net.fit(train_images,train_labels,epochs=10,batch_size=32)
+
+#Evaluation
+loss, acc = net.evaluate(test_images, test_labels)
+epochs = np.array(range(1,11))
+plt.plot(epochs, acc, label = 'Training accuracy')
+plt.plot(epochs, loss, label = 'Training loss')
+plt.legend()
+plt.show()
+
+
